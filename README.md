@@ -30,14 +30,14 @@ and tests are very incomplete. You've been warned!
 
 ## Definitions
 
-There is some [vocabulary]("./src/struct/definitions") you need to know about
+There is some [vocabulary](src/struct/definitions) you need to know about
 the project. Good thing is it's just a few:
 
-* [declarations]("./docs/definitions.md#declarations"),
-* [calls]("./docs/definitions.md#calls"),
-* [answers]("./docs/definitions.md#answers"),
-* [phones]("./docs/definitions.md#phones"),
-* [programs]("./docs/definitions.md#programs").
+* [declarations](docs/definitions.md#declarations),
+* [calls](docs/definitions.md#calls),
+* [answers](docs/definitions.md#answers),
+* [phones](docs/definitions.md#phones),
+* [programs](docs/definitions.md#programs).
 
 ## Useful things not covered by the reference
 
