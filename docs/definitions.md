@@ -11,7 +11,7 @@ data structures related to the `FlyingPrograms`. They are just five:
 
 ### Declarations
 
-A `declaration` is a way to document a `function`, by wrapping it around an
+A `declaration` is a way to document a `function` by wrapping it around an
 object with the following properties:
 
 ```js
@@ -27,6 +27,23 @@ definitions.declaration = {
   function: "function|generatorfunction"
 }
 ```
+
+#### A `declaration` *must* have
+
+* a `function` with a value that is either a function, or a generator function,
+
+#### A `declaration` *can* have
+
+* a `name` with a string that identifies it,
+* a `description` with a string that describes it,
+* a `input` with a superstruct `tuple` that must be used to validate every
+input before calling the function,
+* a `output` with a superstruct `struct` that must be used to validate every
+output of this function before considering it valid,
+* a `async` with a boolean specifying if the function should be called
+asynchronously,
+* a `generator` with a boolean specifying if the function result should be
+iterated.
 
 #### Examples of Declarations
 
@@ -63,7 +80,7 @@ and idea on how this validations can be done, by doing it by hand.
 ```js
 import { struct } from "superstruct";
 
-let execute = function(...input) {
+let execute = function( ...input ) {
   let validate = struct.tuple( multiplyDeclaration.input );
   try{
     validate( input )
