@@ -3,11 +3,11 @@
 In this document, you are going to find information about all the relevant
 data structures related to the `FlyingPrograms`. They are just five:
 
-* [declarations]("#declarations"),
-* [calls]("#calls"),
-* [answers]("#answers"),
-* [phones]("#phones"),
-* [programs]("#programs").
+* [declarations](#declarations),
+* [calls](#calls),
+* [answers](#answers),
+* [phones](#phones),
+* [programs](#programs).
 
 ### Declarations
 
