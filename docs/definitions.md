@@ -18,13 +18,13 @@ object with the following properties:
 const definitions = {}
 
 definitions.declaration = {
-  "name": "string?",
-  "description": "string?",
-  "input": "tuple?",
-  "output": "struct?",
-  "async": "boolean?",
-  "generator": "boolean?",
-  "function": "function|generatorfunction"
+  name: "string?",
+  description: "string?",
+  input: "tuple?",
+  output: "struct?",
+  async: "boolean?",
+  generator: "boolean?",
+  function: "function|generatorfunction"
 }
 ```
 
@@ -89,9 +89,9 @@ function.
 
 ```js
 definitions.call = {
-  "input": "array?",
-  "async": "boolean?",
-  "declaration": definitions.declaration
+  input: "array?",
+  async: "boolean?",
+  declaration: definitions.declaration
 }
 ```
 
@@ -148,8 +148,8 @@ An `answer` is meant to represent a result from a `call` to a declared function.
 
 ```js
 definitions.answer = {
-  "output": "any?",
-  "call": definitions.call
+  output: "any?",
+  call: definitions.call
 }
 ```
 
@@ -164,13 +164,13 @@ lest have an idea of what a `phone` is:
 
 ```js
 definitions.phone = {
-  "beforeInputValidation": "function?",
-  "beforeCall": "function?",
-  "afterCall": "function?",
-  "afterOutputValidation": "function?",
-  "errorInputValidation": "function?",
-  "errorCall": "function?",
-  "errorOutputValidation": "function?"
+  beforeInputValidation: "function?",
+  beforeCall: "function?",
+  afterCall: "function?",
+  afterOutputValidation: "function?",
+  errorInputValidation: "function?",
+  errorCall: "function?",
+  errorOutputValidation: "function?"
 }
 ```
 
@@ -224,11 +224,11 @@ properties:
 
 ```js
 definition.program = {
-  "description": "string?",
-  "declarations": restruct.dict( [ "string", definitions.declaration ] ),
-  "orders": restruct.optional( definitions.declaration ),
-  "phone": restruct.optional( definitions.phone ),
-  "async": "boolean?"
+  description: "string?",
+  declarations: restruct.dict( [ "string", definitions.declaration ] ),
+  orders: restruct.optional( definitions.declaration ),
+  phone: restruct.optional( definitions.phone ),
+  async: "boolean?"
 }
 ```
 
