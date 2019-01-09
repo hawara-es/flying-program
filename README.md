@@ -3,12 +3,10 @@
 ## Development Stage
 
 Before you keep reading, you must know that this project is still in a
-`development` stage.
+`preview` stage and no official production version has been still released.
 
-The internal structure of this project is meant to change before
-its first production version is released.
-
-Also, documentation and tests are very incomplete. You've been warned!
+The internal structure of this project is meant to change. Also, documentation
+and tests are very incomplete. You've been warned!
 
 ## The `aims`
 
