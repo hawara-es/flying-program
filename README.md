@@ -30,7 +30,7 @@ and tests are very incomplete. You've been warned!
 
 ## Definitions
 
-There is some [vocabulary](src/struct/definitions) you need to know about
+There is some [vocabulary](src/struct/definitions.js) you need to know about
 the project. Good thing is it's just a few:
 
 * [declarations](docs/definitions.md#declarations),
