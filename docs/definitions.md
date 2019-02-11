@@ -36,9 +36,9 @@ definitions.declaration = {
 
 * a `name` with a string that identifies it,
 * a `description` with a string that describes it,
-* a `input` with a superstruct `tuple` that must be used to validate every
-input before calling the function,
-* a `output` with a superstruct `struct` that must be used to validate every
+* a `input` with a superstruct [tuple](https://github.com/ianstormtaylor/superstruct/blob/master/docs/reference.md#tuple)
+that must be used to validate every input before calling the function,
+* a `output` with a `struct` value that must be used to validate every
 output of this function before considering it valid,
 * a `async` with a boolean specifying if the function should be called
 asynchronously,

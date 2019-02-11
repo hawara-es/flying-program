@@ -11,6 +11,7 @@ let helloWonderland = {
   declarations: {
     manySalutations: {
       input: [ [ "string" ] ],
+      generator: true,
       description: "Iterates a list of received names.",
       function: function*( people ) {
         for( const person of people )
@@ -21,17 +22,20 @@ let helloWonderland = {
       description: "Returns a salutation containing the string received " +
         "as parameter, but only if it was a string. If it wasn't, returns " +
         "a default salutation.",
+      generator: true,
       input: [ "string|undefined" ],
-      function: ( who ) => {
-        if( who ) return `Hello, ${who}!`;
-        else return "Hello, Wonderland!";
+      function: function*( who ) {
+        if( who ) yield `Hello, ${who}!`;
+        else yield "Hello, Wonderland!";
       }
     },
     log: {
       description: "Logs what it receives as an input but it must be a " +
         "string.",
-      function: function( message ) {
-        console.log( message );
+      generator: false,
+      function: function( messages ) {
+        for( let message of messages )
+          console.log( message );
       }
     }
   },
@@ -39,14 +43,10 @@ let helloWonderland = {
     function: function*( program, input ) {
       if( Array.isArray( input ) )
         yield "manySalutations";
-      else if( typeof input === "string" || typeof input === "undefined" )
-        yield "oneSalutation";
-      else
-        return;
+      yield "oneSalutation";
       yield "log";
     }
   }
 }
 
-helloWonderland = new Program( helloWonderland );
-module.exports = helloWonderland.execute();
+module.exports = Program( helloWonderland );

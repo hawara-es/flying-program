@@ -14,17 +14,17 @@ let generateSalutations = {
       }
     },
     sayHello: {
-      generator: false,
+      generator: true,
       input: [ "string" ],
-      function: function( person ) {
-        return `Hello, ${person}!`;
+      function: function*( person ) {
+        yield `Hello, ${person}!`;
       }
     },
     log: {
+      generator: false,
       function: function( salutations ) {
         for( const salutation of salutations )
           console.log( salutation );
-        return { done: true }
       }
     }
   },
@@ -37,5 +37,4 @@ let generateSalutations = {
   }
 }
 
-generateSalutations = new Program( generateSalutations );
-module.exports = generateSalutations.execute();
+module.exports = Program( generateSalutations );

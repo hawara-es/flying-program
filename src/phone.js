@@ -37,7 +37,7 @@ const prepareCall = function( phone, call ) {
   So we'll make a copy of it, and we'll do the same for the rest of
   triggers. */
 
-  let copy = copies.call;
+  var copy = copies.call;
 
   /* This is the `input` we are going to use for the call. */
 
@@ -74,6 +74,8 @@ const prepareCall = function( phone, call ) {
 }
 
 const finishCall = function( phone, answer ) {
+  var copy = copies.answer;
+
   if( phone.hasOwnProperty( "afterCall" ) ) {
     try{ phone.afterCall( copy( answer ) ); }
     finally{}
@@ -98,7 +100,6 @@ const finishCall = function( phone, answer ) {
     }
 
     if( phone.hasOwnProperty( "afterOutputValidation" ) ) {
-      let copy = copies.call;
       try{ phone.afterOutputValidation( copy( answer ) ); }
       finally{}
     }

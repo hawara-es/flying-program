@@ -103,8 +103,7 @@ filters.program = function( program ) {
     }
   } else {
     program.orders = {
-      description: "This is an automatically inserted `orders` function that " +
-        "will make the declarations of the program be executed sequencially: " +
+      description: "Steps to be executed sequencially: " +
         Object.keys( program.declarations ).join( ", " ) + ".",
       function: function*() { yield* Object.keys( program.declarations ); },
       generator: true,

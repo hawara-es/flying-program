@@ -24,6 +24,4 @@ let readFile = {
   }
 }
 
-readFile = new Program( readFile );
-
-module.exports = readFile;
+module.exports = Program( readFile );

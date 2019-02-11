@@ -5,43 +5,14 @@ const filters = require( "./struct/filters" );
 const copies = require( "./struct/copies" );
 const Phone = require( "./phone" );
 
-const Program = function( program ) {
-  Object.assign( this, read( program ) );
-}
-
-const read = function( program ) {
-  const copy = copies.program;
-  program = copy( program );
-
-  if( ! program.hasOwnProperty( "phone" ) )
-    program.phone = new Phone();
-  else
-    program.phone = new Phone( program.phone );
-
-  return program;
-}
-
-const reset = function( program ) {
-  let schema = definitions.program.schema;
-  Object.keys( schema ).forEach( key => {
-    delete( program[ key ] );
-  });
-}
-
-Program.prototype.reprogram = function( program ) {
-  let upgraded = Object.assign( {}, read( program ) );
-  reset( this );
-  Object.assign( this, upgraded );
-}
-
-Program.prototype.execute = function( ...flow ) {
+const execute = function( ...flow ) {
   const program = this;
   const phone = program.phone;
   const copyProgram = copies.program;
   const copyFlow = copies.unfiltered;
 
   if( program.async )
-    throw new Error( "Can't run synchronously an asynchronous program." );
+    throw "Can't run synchronously an asynchronous program.";
 
   const callback = function*( generator, declaration ) {
     for( const item of generator ) {
@@ -69,11 +40,11 @@ Program.prototype.execute = function( ...flow ) {
 
   for( const declaration of ordersToFollow ) {
     if( previous.generator ) {
-      let generator = callback( previous.generator, declaration );
       if( ! declaration.generator ) {
-        flow = [ Array.from( generator ) ];
+        flow = phone.dialToArray( declaration, [ previous.generator ] );
         previous.generator = null;
       } else {
+        let generator = callback( previous.generator, declaration );
         previous.generator = generator;
       }
     } else {
@@ -91,7 +62,7 @@ Program.prototype.execute = function( ...flow ) {
     return flow[0];
 }
 
-Program.prototype.executeAsync = async function( ...flow ) {
+const executeAsync = async function( ...flow ) {
   const program = this;
   const phone = program.phone;
   const copyProgram = copies.program;
@@ -130,11 +101,11 @@ Program.prototype.executeAsync = async function( ...flow ) {
 
   for( const declaration of ordersToFollow ) {
     if( previous.generator ) {
-      let generator = await callback( previous.generator, declaration );
       if( ! declaration.generator ) {
-        flow = await arrayFromAsync( generator );
+        flow = await phone.dialAsyncToArray( declaration, [ previous.generator ] );
         previous.generator = null;
       } else {
+        let generator = await callback( previous.generator, declaration );
         previous.generator = generator;
       }
     } else {
@@ -152,4 +123,32 @@ Program.prototype.executeAsync = async function( ...flow ) {
     return flow[0];
 }
 
-module.exports = Program;
+const read = function( program ) {
+  const copy = copies.program;
+  program = copy( program );
+
+  if( ! program.hasOwnProperty( "phone" ) )
+    program.phone = new Phone();
+  else
+    program.phone = new Phone( program.phone );
+
+  return program;
+}
+
+const FlyingProgram = function( init ) {
+  let program = {}
+  Object.assign( program, read( init ) );
+
+  let compiled;
+  if( ! program.async ) {
+    compiled = execute.bind( program );
+  } else {
+    compiled = executeAsync.bind( program );
+  }
+
+  compiled.source = init;
+  compiled.compiler = FlyingProgram;
+  return compiled;
+}
+
+module.exports = FlyingProgram;

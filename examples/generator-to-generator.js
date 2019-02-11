@@ -24,15 +24,18 @@ let generatorToGenerator = {
     },
     log: {
       description: "Pinta por consola cada uno de los nombres generados.",
-      function: function( nombre ) {
+      generator: true,
+      function: function*( nombre ) {
         console.log( "Nombre y apellidos:", nombre );
-        return nombre;
+        yield nombre;
       }
     },
     end: {
+      generator: false,
       description: "Pinta el conteo de nombres generados.",
       function: function( nombres ) {
-        console.log( `Generados ${nombres.length} nombres.` );
+        let total = Array.from( nombres ).length;
+        console.log( `Generados ${total} nombres.` );
       }
     }
   },
@@ -48,5 +51,4 @@ let generatorToGenerator = {
   }
 }
 
-generatorToGenerator = new Program( generatorToGenerator );
-module.exports = generatorToGenerator.execute();
+module.exports = Program( generatorToGenerator );

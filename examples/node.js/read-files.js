@@ -1,11 +1,13 @@
 const Program = require( "../../src/program" );
-const nodeReadFile = require( "../../src/node.js/readfile" );
+const readFile = require( "../../src/node.js/readfile" );
 
 let readFiles = {
   description: "Reads the package.json of the current folder and logs its " +
     "content through the console.",
+  async: true,
   declarations: {
     files: {
+      generator: true,
       function: function*() {
         yield* [ "package.json", "README.md" ];
       }
@@ -13,16 +15,21 @@ let readFiles = {
     readFile: {
       description: "Reads a file from the current folder and " +
         "returns its content as a string.",
+      async: true,
+      generator: true,
       input: [ "string" ],
       output: "string",
-      async: true,
-      function: async function( file ) {
-        return await nodeReadFile.executeAsync( "./", file );
+      function: async function*( file ) {
+        yield await readFile( "./", file );
       }
     },
     logItsContent: {
-      function: ( content ) => {
-        console.log( content );
+      async: true,
+      generator: false,
+      function: async function( content ) {
+        for await( let item of content ) {
+          console.log( item );
+        }
       }
     }
   },
@@ -46,6 +53,4 @@ let readFiles = {
   }
 }
 
-readFiles = new Program( readFiles );
-
-module.exports = readFiles.executeAsync();
+module.exports = Program( readFiles );

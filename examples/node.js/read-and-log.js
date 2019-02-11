@@ -1,18 +1,19 @@
 const Program = require( "../../src/program" );
-const nodeReadFile = require( "../../src/node.js/readfile" );
+const readFile = require( "../../src/node.js/readfile" );
 
 let readPackageJson = {
   description: "Reads the package.json of the current folder and logs its " +
     "content through the console.",
+  async: true,
   declarations: {
     readFile: {
       description: "Reads the package.json of the current folder and " +
         "returns its content as a string.",
+      async: true,
       output: "string",
       function: async function() {
-        return await nodeReadFile.executeAsync( "./", "package.json" );
-      },
-      async: true
+        return await readFile( "./", "package.json" );
+      }
     },
     logItsContent: {
       input: [ "string" ],
@@ -42,6 +43,4 @@ let readPackageJson = {
   }
 }
 
-readPackageJson = new Program( readPackageJson );
-
-module.exports = readPackageJson.executeAsync();
+module.exports = Program( readPackageJson );

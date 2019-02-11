@@ -4,10 +4,6 @@
   "description": "An framework-based attempt to write easy to read programs.",
   "main": "./src/index.js",
   "scripts": {
-    "run": "node --experimental-modules ./src/program.mjs",
-    "prepare-tools": "chmod +x ./tools/browserify.sh && chmod +x ./tools/samples/browserify.sh",
-    "build": "./tools/browserify.sh",
-    "build-samples": "./tools/samples/browserify.sh",
     "test": "mocha --recursive"
   },
   "keywords": [
@@ -24,6 +20,7 @@
     "superstruct": "^0.6.0"
   },
   "devDependencies": {
+    "browserify": "^16.2.3",
     "mocha": "*"
   },
   "license": "GPL-3.0-or-later",
