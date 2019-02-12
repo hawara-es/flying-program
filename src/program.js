@@ -39,19 +39,18 @@ const execute = function( ...flow ) {
   let previous = { generator: null };
 
   for( const declaration of ordersToFollow ) {
-    if( previous.generator ) {
-      if( ! declaration.generator ) {
-        flow = phone.dialToArray( declaration, [ previous.generator ] );
-        previous.generator = null;
-      } else {
-        let generator = callback( previous.generator, declaration );
-        previous.generator = generator;
-      }
-    } else {
+    if( ! previous.generator ) {
       if( ! declaration.generator ) {
         flow = phone.dialToArray( declaration, flow );
       } else {
         previous.generator = phone.dial( declaration, flow );
+      }
+    } else {
+      if( ! declaration.generator ) {
+        flow = phone.dialToArray( declaration, [ previous.generator ] );
+        previous.generator = null;
+      } else {
+        previous.generator = callback( previous.generator, declaration );
       }
     }
   }
@@ -68,12 +67,6 @@ const executeAsync = async function( ...flow ) {
   const copyProgram = copies.program;
   const copyFlow = copies.unfiltered;
 
-  const callback = async function*( generator, declaration ) {
-    for await( const item of generator ) {
-      yield* phone.dialAsync( declaration, [ item ] );
-    }
-  }
-
   const orders = function*( ...input ) {
     for( const order of phone.dial( program.orders, input ) ) {
       if( typeof order !== "string" )
@@ -86,11 +79,10 @@ const executeAsync = async function( ...flow ) {
     }
   }
 
-  const arrayFromAsync = async function( generator ) {
-    let aggregate = [];
-    for await( const item of generator )
-      aggregate.push( item );
-    return [ aggregate ];
+  const callback = async function*( generator, declaration ) {
+    for await( const item of generator ) {
+      yield* phone.dialAsync( declaration, [ item ] );
+    }
   }
 
   const initial = copyFlow( flow );
@@ -100,19 +92,18 @@ const executeAsync = async function( ...flow ) {
   let previous = { generator: null };
 
   for( const declaration of ordersToFollow ) {
-    if( previous.generator ) {
-      if( ! declaration.generator ) {
-        flow = await phone.dialAsyncToArray( declaration, [ previous.generator ] );
-        previous.generator = null;
-      } else {
-        let generator = await callback( previous.generator, declaration );
-        previous.generator = generator;
-      }
-    } else {
+    if( ! previous.generator ) {
       if( ! declaration.generator ) {
         flow = await phone.dialAsyncToArray( declaration, flow );
       } else {
         previous.generator = await phone.dialAsync( declaration, flow );
+      }
+    } else {
+      if( ! declaration.generator ) {
+        flow = await phone.dialAsyncToArray( declaration, [ previous.generator ] );
+        previous.generator = null;
+      } else {
+        previous.generator = await callback( previous.generator, declaration );
       }
     }
   }
