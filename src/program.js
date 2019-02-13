@@ -100,7 +100,10 @@ const executeAsync = async function( ...flow ) {
       }
     } else {
       if( ! declaration.generator ) {
-        flow = await phone.dialAsyncToArray( declaration, [ previous.generator ] );
+        flow = await phone.dialAsyncToArray(
+          declaration,
+          [ previous.generator ]
+        );
         previous.generator = null;
       } else {
         previous.generator = await callback( previous.generator, declaration );
