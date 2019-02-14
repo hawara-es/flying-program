@@ -1,5 +1,5 @@
-const Program = require( "../src" ).Program;
-const restruct = require( "../src" ).restruct;
+const Program = require( "../../src" ).Program;
+const restruct = require( "../../src" ).restruct;
 
 const stringOrArrayOfStrings = restruct.union(
   [ [ "string" ], "string|undefined" ]

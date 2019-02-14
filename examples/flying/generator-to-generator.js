@@ -1,6 +1,6 @@
-const Program = require( "../src/program" );
+const Program = require( "../../src/program" );
 
-let generatorToGenerator = {
+const generatorToGenerator = {
   description: "Tomando sólo cuatro nombres y cuatro apellidos como entrada, " +
     "genera todas las combinaciones en que esos nombres y apellidos se " +
     "puedan combinar con la forma: nombre, primer apellido y segundo apellido.",

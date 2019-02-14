@@ -4,7 +4,10 @@
   "description": "An framework-based attempt to write easy to read programs.",
   "main": "./src/index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "build": "browserify ./src/index.js -o dist/flying-program.js -s flying-program",
+    "build-examples": "browserify ./examples/flying/index.js -o dist/flying-examples.js -s flying-examples",
+    "watch": "watchify ./src/index.js -o dist/flying-program.js"
   },
   "keywords": [
     "program",
