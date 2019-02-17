@@ -1,37 +1,34 @@
 const Program = require( "../../src/program" );
-const restruct = require( "../../src/restruct" );
+const restruct = require( "../../src/struct/restruct" );
 
 const stringOrArrayOfStrings = restruct.union(
   [ [ "string" ], "string|undefined" ]
 );
 
 let helloWonderland = {
-  description: "Program with a first step that decides a salutation and a " +
-    "second step that logs it.",
+  description: "Genera un saludo y luego lo muestra por consola.",
   declarations: {
     manySalutations: {
+      description: "Recibe un array de cadenas y pasa a la siguiente " +
+        "declaración cada uno de sus valores.",
       input: [ [ "string" ] ],
       generator: true,
-      description: "Iterates a list of received names.",
-      function: function*( people ) {
-        for( const person of people )
-          yield person;
-      }
+      function: function*( people ) { yield* people; }
     },
     oneSalutation: {
-      description: "Returns a salutation containing the string received " +
-        "as parameter, but only if it was a string. If it wasn't, returns " +
-        "a default salutation.",
-      generator: true,
+      description: "Genera una cadena saludando a la persona cuyo nombre " +
+        "se haya recibido por el parámetro único de entrada. Si no " +
+        "se ha recibido nada, prepara un saludo genérico.",
       input: [ "string|undefined" ],
+      generator: true,
       function: function*( who ) {
         if( who ) yield `Hello, ${who}!`;
         else yield "Hello, Wonderland!";
       }
     },
     log: {
-      description: "Logs what it receives as an input but it must be a " +
-        "string.",
+      description: "Itera cada uno de los saludos generados y los pinta por " +
+        "consola.",
       generator: false,
       function: function( messages ) {
         for( let message of messages )
@@ -40,6 +37,9 @@ let helloWonderland = {
     }
   },
   orders: {
+    description: "Si el parámetro único es un array, ejecuta " +
+      "primero `manySalutations`. A partir de ahí, continúa ejecutando " +
+      "`oneSalutation` y termina con `log`.",
     function: function*( program, input ) {
       if( Array.isArray( input ) )
         yield "manySalutations";

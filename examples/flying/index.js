@@ -1,5 +1,5 @@
 module.exports = {
-  generateSalutations: require( "./generate-salutations" ),
-  generatorToGenerator: require( "./generator-to-generator" ),
+  salutationLogger: require( "./salutation-logger" ),
+  gen2gen: require( "./gen2gen" ),
   helloWonderland: require( "./hello-wonderland" )
 }

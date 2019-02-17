@@ -1742,10 +1742,129 @@ module.exports = {
   "definitions": require( "./struct/definitions" ),
   "filters": require( "./struct/filters" ),
   "copies": require( "./struct/copies" ),
-  "readFile": require( "./node.js/readfile" )
+  "readFile": require( "./node.js/readfile" ),
+  "jsonWalk": require( "./json/walk" ),
+  "jsonRender": require( "./json/render" )
 }
 
-},{"./node.js/readfile":6,"./phone":7,"./program":8,"./struct/copies":9,"./struct/definitions":10,"./struct/filters":11,"./struct/restruct":12}],6:[function(require,module,exports){
+},{"./json/render":6,"./json/walk":7,"./node.js/readfile":8,"./phone":9,"./program":10,"./struct/copies":11,"./struct/definitions":12,"./struct/filters":13,"./struct/restruct":14}],6:[function(require,module,exports){
+const Program = require( "../program" );
+const jsonWalk = require( "./walk" );
+
+const jsonRender = {
+  declarations: {
+    walk: {
+      generator: true,
+      function: function*( value, target, document ) {
+        let chain = {}
+        let root;
+
+        for( let item of jsonWalk( value ) ) {
+          if( item.type == "non-json" ) continue;
+
+          if( item.type == "array" || item.type == "object" ) {
+            let table = document.createElement( "table" );
+            table.setAttribute( "class", item.type );
+
+            if( ! root ) root = table;
+            chain[ item.id ] = { table: table }
+          }
+
+          if( item.parent ) {
+            let row = document.createElement( "tr" );
+            chain[ item.parent.id ].table.appendChild( row );
+
+            let property = document.createElement( "td" );
+            property.setAttribute( "class", "property" );
+
+            let data = document.createElement( "td" );
+            data.setAttribute( "class", "value" );
+
+            if( item.property.length )
+              property.innerHTML = item.property[ item.property.length - 1 ];
+
+            if( item.type != "object" && item.type != "array" )
+              data.innerHTML = item.value;
+            else
+              data.appendChild( chain[ item.id ].table );
+
+            if( item.parent.type == "object" )
+              row.appendChild( property );
+            row.appendChild( data );
+          }
+        }
+
+        target.appendChild( root );
+      }
+    }
+  }
+}
+
+module.exports = Program( jsonRender );
+
+},{"../program":10,"./walk":7}],7:[function(require,module,exports){
+const FlyingProgram = require( "../program" );
+
+function* walk( value, property = [], parent = null ) {
+  switch( typeof value ) {
+    case "boolean":
+    case "string":
+    case "number":
+      yield { value, type: typeof value, property, parent }
+      break;
+    case "object":
+      if( value === null ) {
+        yield { value: value, type: "null", property, parent }
+      } else {
+        let root = property.slice(0);
+        let id = Symbol();
+
+        let object = { value, property: root, id, parent }
+
+        if( Array.isArray( value ) )
+          object.type = "array";
+        else
+          object.type = "object";
+
+        yield object;
+
+        for( let i = 0; i < Object.keys( value ).length; i++ ) {
+          let key = Object.keys( value )[i];
+          let innerValue = value[ key ];
+
+          let anchor = root.slice(0);
+          anchor.push( key );
+
+          yield* walk( innerValue, anchor, object );
+        }
+      }
+      break;
+    default:
+      yield { value: value, type: "non-json", property, parent }
+      break;
+  }
+}
+
+function* firstStep( value ) { yield* walk( value ); }
+
+let jsonWalk = {
+  description: "Returns a generator that walks recursively a value. When " +
+    "something like a function is found, it will be yielded as a value with " +
+    "a 'non-json' type.",
+  declarations: {
+    walk: {
+      description: "Walks over a JavaScript object and yields each of its " +
+        "values.",
+      generator: true,
+      async: false,
+      function: firstStep
+    }
+  }
+}
+
+module.exports = FlyingProgram( jsonWalk );
+
+},{"../program":10}],8:[function(require,module,exports){
 const path = require( "path" );
 const fs = require( "fs" );
 
@@ -1774,7 +1893,7 @@ let readFile = {
 
 module.exports = Program( readFile );
 
-},{"../program":8,"fs":1,"path":2}],7:[function(require,module,exports){
+},{"../program":10,"fs":1,"path":2}],9:[function(require,module,exports){
 "use strict";
 
 const filters = require( "./struct/filters" );
@@ -2010,7 +2129,7 @@ Phone.prototype.dialAsyncToArray = async function( declaration, input ) {
 
 module.exports = Phone;
 
-},{"./struct/copies":9,"./struct/filters":11,"./struct/restruct":12}],8:[function(require,module,exports){
+},{"./struct/copies":11,"./struct/filters":13,"./struct/restruct":14}],10:[function(require,module,exports){
 "use strict";
 
 const definitions = require( "./struct/definitions" );
@@ -2160,7 +2279,7 @@ const FlyingProgram = function( init ) {
 
 module.exports = FlyingProgram;
 
-},{"./phone":7,"./struct/copies":9,"./struct/definitions":10,"./struct/filters":11}],9:[function(require,module,exports){
+},{"./phone":9,"./struct/copies":11,"./struct/definitions":12,"./struct/filters":13}],11:[function(require,module,exports){
 "use strict";
 
 const filters = require( "./filters" );
@@ -2228,7 +2347,7 @@ copies.unfiltered = clone;
 
 module.exports = copies;
 
-},{"./filters":11}],10:[function(require,module,exports){
+},{"./filters":13}],12:[function(require,module,exports){
 "use strict";
 
 const restruct = require( "./restruct" );
@@ -2279,7 +2398,7 @@ definitions.program = restruct({
 
 module.exports = definitions;
 
-},{"./restruct":12}],11:[function(require,module,exports){
+},{"./restruct":14}],13:[function(require,module,exports){
 "use strict";
 
 const definitions = require( "./definitions" );
@@ -2398,7 +2517,7 @@ filters.program = function( program ) {
 
 module.exports = filters;
 
-},{"./definitions":10,"./restruct":12}],12:[function(require,module,exports){
+},{"./definitions":12,"./restruct":14}],14:[function(require,module,exports){
 "use strict";
 
 /* Prepares a `struct` object with inner types `struct` and

@@ -6,5 +6,6 @@ module.exports = {
   "filters": require( "./struct/filters" ),
   "copies": require( "./struct/copies" ),
   "readFile": require( "./node.js/readfile" ),
-  "jsonWalk": require( "./json-walk" )
+  "jsonWalk": require( "./json/walk" ),
+  "jsonRender": require( "./json/render" )
 }

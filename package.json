@@ -7,6 +7,7 @@
     "test": "mocha --recursive",
     "build": "browserify ./src/index.js -o dist/flying-program.js -s flying-program",
     "build-examples": "browserify ./examples/flying/index.js -o dist/flying-examples.js -s flying-examples",
+    "build-all": "npm run build && npm run build-examples",
     "watch": "watchify ./src/index.js -o dist/flying-program.js"
   },
   "keywords": [
