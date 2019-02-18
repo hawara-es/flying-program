@@ -8,13 +8,9 @@
       href="fonts/fontssquirrel/webfontkit.css" />
 
     <style>
-      body,
-      input,
-      select,
-      textarea,
-      button {
+      * {
         font-family: "rajdhani";
-        font-size: 1.5em;
+        font-size: 1.2rem;
       }
 
       input,
@@ -27,14 +23,6 @@
       .container {
         width: 85%;
         margin: 4em auto;
-      }
-
-      .target {
-        width: 100%;
-      }
-
-      input {
-        width: 100%;
       }
 
       .object,
@@ -63,46 +51,74 @@
     <script type="text/ecmascript" src="../../dist/flying-examples.js"></script>
   </head>
   <body>
-    <button id="gen2gen">gen2gen</button>
-    <button id="helloWonderland">helloWonderland</button>
-    <button id="salutationLogger">salutationLogger</button>
+    <div class="container">
+      <div id="root"></div>
+      <div id="results"></div>
+    </div>
 
-    <div id="root" class="container"></div>
     <button id="execute">Ejecutar</button>
 
     <script type="text/javascript">
-      const root = document.getElementById( "root" );
+      const programRoot = document.getElementById( "root" );
+      const resultsRoot = document.getElementById( "results" );
 
-      const clearRoot = function() {
+      const clear = function( root ) {
         while ( root.firstChild )
           root.removeChild( root.firstChild );
       }
 
-      const botonEjecutar = document.getElementById( "execute" );
+      let results;
+
+      const executeButton = document.getElementById( "execute" );
 
       const loadProgram = function( program ) {
-        clearRoot();
+        const jsonRender = flyingProgram.jsonRender;
+        clear( programRoot );
+        Array.from( jsonRender( program.source, programRoot, document ) );
 
-        Array.from(
-          flyingProgram.jsonRender(
-            flyingExamples[ program ].source, root, document
-          )
-        )
-
-        botonEjecutar.addEventListener( "click", () => flyingExamples[ program ]() );
+        executeButton.addEventListener(
+          "click",
+          function() {
+            results = []
+            program();
+            clear( resultsRoot );
+            Array.from( jsonRender( results, resultsRoot, document ) );
+          }
+        );
       }
 
-      const gen2gen = document.getElementById( "gen2gen" );
-      gen2gen.addEventListener( "click", () =>
-        loadProgram( "gen2gen" ) );
+      const reprogram = function( programName ) {
+        const Program = flyingProgram.Program;
+        const source = flyingExamples[ programName ].source;
 
-      const helloWonderland = document.getElementById( "helloWonderland" );
-      helloWonderland.addEventListener( "click", () =>
-        loadProgram( "helloWonderland" ) );
+        if( ! source.phone ) source.phone = {}
 
-      const salutationLogger = document.getElementById( "salutationLogger" );
-      salutationLogger.addEventListener( "click", () =>
-        loadProgram( "salutationLogger" ) );
+        let beforeCall;
+        if( source.phone.hasOwnProperty( "beforeCall" ) ) {
+          beforeCall = source.phone.beforeCall;
+        }
+
+        let afterCall;
+        if( source.phone.hasOwnProperty( "afterCall" ) ) {
+          afterCall = source.phone.afterCall;
+        }
+
+        const interceptBeforeCall = function( call ) {
+          if( beforeCall ) beforeCall( call );
+          results.push( call );
+        }
+
+        const interceptAfterCall = function( answer ) {
+          if( afterCall ) afterCall( answer );
+          results.push( answer );
+        }
+
+        source.phone.beforeCall = interceptBeforeCall;
+        source.phone.afterCall = interceptAfterCall;
+        return Program( source );
+      }
+
+      loadProgram( reprogram( "gen2gen" ) );
     </script>
   </body>
 </html>
